@@ -4,7 +4,7 @@ library(lubridate)
 library(ggplot2)
 
 # Read
-cash_raw <- read.delim('downloaded/cash.tsv', stringsAsFactors=FALSE) %>% tbl_df()
+cash_raw <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1fyS4_Qoufdfy6kty5_qxuIDuvClIomn6E542vGwSF0Y/edit')
 
 cash <- cash_raw %>%
 	mutate(Incurred = dmy(Incurred),
