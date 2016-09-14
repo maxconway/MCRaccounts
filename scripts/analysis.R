@@ -25,3 +25,14 @@ balances %>%
 	group_by(year = year(date)) %>%
 	summarise(median(assets))
 
+accounts %>%
+	filter(accounting_date > dmy('1/1/2015')) %>%
+	filter(delta<0) %>%
+	group_by(month=floor_date(accounting_date, 'month'), Category, type=c('income','expenditure')[(delta<0)+1]) %>%
+	summarise(amount = sum(abs(delta))) %>%
+	ggplot(aes(x=month, fill=Category, y=amount)) + geom_bar(stat='identity')
+
+balances %>%
+	mutate(assets = assets-balances[match(floor_date(date,'year'), balances$date),][['assets']]) %>%
+	ggplot(aes(x=date-floor_date(date, 'year'), y=assets, colour=factor(floor_date(date, 'year')))) + 
+	geom_path()
