@@ -15,6 +15,6 @@ debts <- previous_bills %>%
 	select(crsid, Member.No, owes, Surname, Other.names)
 	
 debts %>% 
-	readr::write_csv('temp/debts.csv')
-debts %>% 
+	mutate(owes = round(owes,2)) %>%
+	readr::write_csv('temp/debts.csv') %>% 
 	readr::write_tsv('temp/debts.tsv')

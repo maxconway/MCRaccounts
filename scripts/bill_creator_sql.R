@@ -1,5 +1,4 @@
-library(dplyr)
-library(purrr)
+library(tidyverse)
 library(stringr)
 library(lubridate)
 
@@ -56,7 +55,8 @@ ticketswithevents <- left_join(full_tickets, full_events) %>%
 # create deductions list
 ticketswithevents  %>%
 	mutate(time = ymd_hms(time)) %>%
-	filter(as.POSIXct(dmy('29/05/2016')) < time, time< as.POSIXct(dmy('20/6/2016')) & !(event_id %in% c(347,346))) %>% # filter dates here
+	filter(as.POSIXct(dmy('21/06/2016')) <= time, time < as.POSIXct(dmy('6/12/2016'))) %>% # filter dates here
+	filter(!(event_id %in% c(347,346))) %>%
 	filter(event_status %in% c(0,1), ticket_status %in% c(0,2)) %>%
 	filter(deductable) %>%
 	group_by(suid) %>%
