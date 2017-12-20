@@ -2,15 +2,23 @@ library(tidyverse)
 library(stringr)
 library(lubridate)
 
+# This script creates a list of deductions from the online system in order to avoid double charging people who pay for dinners by their card's bar code.
+# The database code is also appropriate as the base for any other kind of interaction with the online payment system.
+
 # Event statuses:
 # 1: confirmed
 # 0: Live
 # -1: cancelled
 
 # first run in terminal:
-# ssh -l mjc233 -L 9876:localhost:3306 shell.srcf.net
+# ssh -l <your_crsid> -L 9876:localhost:3306 shell.srcf.net
+#
+# - Requires srcf account with admin rights to selmcr
+# - syntax of command is correct for linux 
 
-selmcr <- src_mysql('selmcr', '127.0.0.1', 9876, 'selmcr', enter password here)
+
+selmcr <- src_mysql('selmcr', '127.0.0.1', 9876, 'selmcr', <password>)
+# Password is listed in passwords spreadsheet
 
 kevman <- c(
 	'kevman_budget',
@@ -48,14 +56,14 @@ ticketswithevents <- left_join(full_tickets, full_events) %>%
 	collect %>%
 	mutate(price_paid = ifelse(is.finite(option_price), option_price, price),
 				 barcode = str_replace_all(message, '[Vv]egan|VEGAN','') %>% str_detect('(^|\\W)[vV][[:alnum:]]{4}(\\W|$)'),
-				 dinner = str_detect(name, '[Ff]ormal Hall|MCR (Annual )?[dD]inner|^(MCR )?Annual Dinner$|^MCR.*[dD]inner$'),
+				 dinner = str_detect(name, '[Ff]ormal Hall|MCR (Annual )?[dD]inner|^(MCR )?Annual Dinner$|^MCR.*[dD]inner$|MCR Burns Night Supper'),
 				 deductable = barcode & dinner & (event_status %in% c(0,1)) & (ticket_status %in% c(0,2))) %>%
 	select(-option_price, -price)
 
 # create deductions list
 ticketswithevents  %>%
 	mutate(time = ymd_hms(time)) %>%
-	filter(as.POSIXct(dmy('21/06/2016')) <= time, time < as.POSIXct(dmy('6/12/2016'))) %>% # filter dates here
+	filter(as.POSIXct(dmy('6/12/2016')) <= time, time < as.POSIXct(dmy('25/3/2017'))) %>% # filter dates here
 	filter(!(event_id %in% c(347,346))) %>%
 	filter(event_status %in% c(0,1), ticket_status %in% c(0,2)) %>%
 	filter(deductable) %>%

@@ -1,3 +1,5 @@
+# Script used in working out charges for previous non-payers
+
 previous_bills <- gsheet::gsheet2tbl('https://docs.google.com/spreadsheets/d/1x175-wPFCx0dfhO6xndMk67aj3llkRQYde6h9r9iHoY/edit?usp=sharing') %>%
 	mutate(Payment = as.numeric(str_replace_all(Payment, '[£,]','')))
 

@@ -5,6 +5,9 @@ library(lubridate)
 library(tidyr)
 library(readr)
 
+# Script to work out full annual accounts
+# It's a bit byzantine, but covers every every base in terms of the types of the types of debts that could exist.
+
 # Read and clean sheets
 
 accounts <- gsheet2tbl('https://docs.google.com/spreadsheets/d/1fyS4_Qoufdfy6kty5_qxuIDuvClIomn6E542vGwSF0Y/edit#gid=0') %>%
